@@ -1,0 +1,334 @@
+:root {
+  --kaymet-red: #E31E24;
+  --kaymet-black: #000000;
+  --kaymet-gray: #4A4A4A;
+  --kaymet-light-gray: #F5F5F5;
+  --base-font-size: 18px;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #ffffff;
+  color: var(--kaymet-black);
+  font-size: var(--base-font-size);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.file-uploader {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-container,
+.container {
+  background: white;
+  padding: 4rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.login-container {
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-logo {
+  width: 380px;
+  margin-bottom: 3rem;
+}
+
+.page-title {
+  color: var(--kaymet-black);
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 0 0 2.5rem 0;
+}
+
+.login-button,
+.upload-button {
+  background-color: var(--kaymet-red);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 28px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+.login-button {
+  background-color: white;
+  color: var(--kaymet-red);
+  border: 2px solid var(--kaymet-red);
+}
+
+.login-button:hover {
+  background-color: var(--kaymet-red);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.upload-button:hover {
+  background-color: #c01a1f;
+  transform: translateY(-1px);
+}
+
+.upload-button:disabled {
+  background-color: var(--kaymet-gray);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.file-input-container {
+  border: 3px dashed var(--kaymet-gray);
+  border-radius: 12px;
+  padding: 3rem;
+  margin: 1.5rem 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-input-container:hover {
+  border-color: var(--kaymet-red);
+  background-color: var(--kaymet-light-gray);
+}
+
+.file-input {
+  display: none;
+}
+
+.file-input-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.file-input-icon {
+  font-size: 3rem;
+  color: var(--kaymet-gray);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background-color: var(--kaymet-light-gray);
+  border-radius: 6px;
+  margin: 2rem 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--kaymet-red);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: var(--kaymet-gray);
+  font-size: 16px;
+  margin-top: 0.75rem;
+}
+
+.error-message {
+  color: var(--kaymet-red);
+  background-color: rgba(227, 30, 36, 0.1);
+  padding: 16px;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  font-size: 16px;
+}
+
+.selected-file {
+  color: var(--kaymet-gray);
+  font-size: 16px;
+  margin: 1.5rem 0;
+  padding: 12px;
+  background-color: var(--kaymet-light-gray);
+  border-radius: 6px;
+  word-break: break-all;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.logout-button {
+  background: none;
+  border: 2px solid var(--kaymet-gray);
+  color: var(--kaymet-gray);
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: var(--kaymet-gray);
+  color: white;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+  color: var(--kaymet-gray);
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.loading::after {
+  content: '';
+  width: 24px;
+  height: 24px;
+  margin-left: 16px;
+  border: 3px solid var(--kaymet-red);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: loading-spin 0.8s linear infinite;
+}
+
+@keyframes loading-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :root {
+    --base-font-size: 16px;
+  }
+  
+  .login-container,
+  .container {
+    padding: 3rem;
+    max-width: 90%;
+  }
+  
+  .app-logo {
+    width: 300px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  :root {
+    --base-font-size: 14px;
+  }
+  
+  .login-container,
+  .container {
+    padding: 2rem;
+  }
+  
+  .app-logo {
+    width: 250px;
+  }
+  
+  .file-input-container {
+    padding: 2rem;
+  }
+}
+
+.report-type-container {
+  margin: 1.5rem 0;
+  text-align: left;
+  width: 100%;
+}
+
+.report-type-label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--kaymet-gray);
+  font-size: 16px;
+}
+
+.report-type-select {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  color: var(--kaymet-black);
+  background-color: white;
+  transition: all 0.3s;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234A4A4A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.5em;
+}
+
+.report-type-select:hover,
+.report-type-select:focus {
+  border-color: var(--kaymet-red);
+}
+
+.custom-report-name-container {
+  margin: 1.5rem 0;
+  text-align: left;
+  width: 100%;
+}
+
+.custom-report-label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--kaymet-gray);
+  font-size: 16px;
+}
+
+.custom-report-input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  color: var(--kaymet-black);
+  transition: all 0.3s;
+  outline: none;
+}
+
+.custom-report-input:hover,
+.custom-report-input:focus {
+  border-color: var(--kaymet-red);
+}
+
+.success-message {
+  color: #28a745;
+  background-color: rgba(40, 167, 69, 0.1);
+  padding: 16px;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  font-size: 16px;
+  font-weight: 600;
+} 

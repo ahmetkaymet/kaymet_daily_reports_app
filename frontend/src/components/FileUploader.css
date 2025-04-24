@@ -1,0 +1,57 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  width: 90%;
+}
+
+.login-button {
+  padding: 14px 28px;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.login-button:hover {
+  background-color: #106ebe;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .popup-content {
+    padding: 2rem;
+    max-width: 90%;
+  }
+  
+  .login-button {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-content {
+    padding: 1.5rem;
+    max-width: 95%;
+  }
+} 
