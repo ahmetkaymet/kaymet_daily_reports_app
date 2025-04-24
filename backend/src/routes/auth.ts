@@ -3,6 +3,14 @@ import { getAuthUrl, handleAuthCodeResponse, validateUserDomain } from '../middl
 
 const router = express.Router();
 
+/**
+ * GET /auth/login
+ * Initiates the Microsoft authentication flow by redirecting to Microsoft login page.
+ * 
+ * @param {express.Request} req - Express request object
+ * @param {express.Response} res - Express response object
+ * @returns {void}
+ */
 router.get('/login', async (req, res) => {
   try {
     console.log('1. Login request received');
@@ -29,6 +37,15 @@ router.get('/login', async (req, res) => {
   }
 });
 
+/**
+ * GET /auth/callback
+ * Handles the callback from Microsoft authentication.
+ * Processes the authorization code, gets tokens, and stores them in session.
+ * 
+ * @param {express.Request} req - Express request object
+ * @param {express.Response} res - Express response object
+ * @returns {void}
+ */
 router.get('/callback', async (req, res) => {
   try {
     console.log('1. Callback received');
@@ -85,7 +102,14 @@ router.get('/callback', async (req, res) => {
   }
 });
 
-// Add a route to get the access token
+/**
+ * GET /auth/token
+ * Returns the user's access token if authenticated.
+ * 
+ * @param {express.Request} req - Express request object
+ * @param {express.Response} res - Express response object
+ * @returns {object} JSON response with the access token or error
+ */
 router.get('/token', (req, res) => {
   console.log('Token requested');
   
@@ -98,6 +122,14 @@ router.get('/token', (req, res) => {
   return res.json({ accessToken: req.session.accessToken });
 });
 
+/**
+ * GET /auth/check
+ * Checks if the user is authenticated by verifying access token in session.
+ * 
+ * @param {express.Request} req - Express request object
+ * @param {express.Response} res - Express response object
+ * @returns {object} JSON response with authentication status
+ */
 router.get('/check', (req, res) => {
   console.log('Auth check requested');
   console.log('Session:', req.session);
@@ -112,6 +144,14 @@ router.get('/check', (req, res) => {
   });
 });
 
+/**
+ * GET /auth/logout
+ * Logs the user out by destroying the session.
+ * 
+ * @param {express.Request} req - Express request object
+ * @param {express.Response} res - Express response object
+ * @returns {void}
+ */
 router.get('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {

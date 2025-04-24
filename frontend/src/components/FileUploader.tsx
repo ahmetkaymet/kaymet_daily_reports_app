@@ -3,7 +3,9 @@ import { format } from 'date-fns';
 import { uploadFile } from '../services';
 import kaymetLogo from '../assets/Kaymet-50.-yil-Logo_Beyaz_Tam.png';
 
-// Rapor türleri için enum
+/**
+ * Enum for different report types that can be uploaded.
+ */
 enum ReportType {
   ORDER = 'Sipariş tutar ve tonaj raporu',
   OFFER = 'Teklif raporu',
@@ -14,8 +16,17 @@ enum ReportType {
   OTHER = 'Diğer'
 }
 
+/**
+ * Interface for FileUploader component props.
+ */
 interface FileUploaderProps {}
 
+/**
+ * Component for uploading files to OneDrive with Microsoft authentication.
+ * Allows users to select report types and customize filenames.
+ * 
+ * @returns {React.FC} A React functional component.
+ */
 const FileUploader: React.FC<FileUploaderProps> = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -28,6 +39,12 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  /**
+   * Checks the authentication status with the backend.
+   * If authenticated, retrieves the access token.
+   * 
+   * @returns {Promise<void>} A promise that resolves when the auth check is complete.
+   */
   const checkAuthStatus = async () => {
     try {
       console.log('Checking auth status...');
@@ -80,6 +97,7 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
     }
   };
 
+  // Check authentication status on component mount
   useEffect(() => {
     checkAuthStatus();
     
@@ -92,15 +110,27 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
     }
   }, []);
 
+  /**
+   * Redirects the user to the Microsoft login page.
+   */
   const handleLogin = () => {
     console.log('Starting login process...');
     window.location.href = 'http://localhost:3001/auth/login';
   };
 
+  /**
+   * Logs the user out and redirects to the logout endpoint.
+   */
   const handleLogout = () => {
     window.location.href = 'http://localhost:3001/auth/logout';
   };
 
+  /**
+   * Formats the filename with date, report type, and time.
+   * 
+   * @param {string} originalName - The original filename.
+   * @returns {string} The formatted filename.
+   */
   const formatFileName = (originalName: string): string => {
     const now = new Date();
     const date = format(now, 'dd-MM-yyyy');
@@ -120,6 +150,11 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
     return `${date}_${reportName}_${time}${extension}`;
   };
 
+  /**
+   * Handles file selection from the input.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} event - The change event.
+   */
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -134,15 +169,31 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
     }
   };
 
+  /**
+   * Handles report type selection change.
+   * 
+   * @param {React.ChangeEvent<HTMLSelectElement>} event - The change event.
+   */
   const handleReportTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedReportType(event.target.value);
     // Diğer seçeneği seçildiğinde bile custom isimi sıfırlama, kullanıcı düzenleyebilsin
   };
 
+  /**
+   * Handles custom report name input change.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} event - The change event.
+   */
   const handleCustomReportNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCustomReportName(event.target.value);
   };
 
+  /**
+   * Handles the file upload process.
+   * Validates inputs and sends the file to the backend.
+   * 
+   * @returns {Promise<void>} A promise that resolves when the upload is complete.
+   */
   const handleUpload = async () => {
     if (!selectedFile) {
       setError('Lütfen önce bir dosya seçin');
@@ -183,6 +234,7 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
     }
   };
 
+  // Check for error in URL parameters (e.g., after auth redirect)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const error = params.get('error');

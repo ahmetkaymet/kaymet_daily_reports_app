@@ -2,6 +2,9 @@ import { getAuthenticatedClient } from '../utils/auth';
 import { Client } from '@microsoft/microsoft-graph-client';
 import { Buffer } from 'buffer';
 
+/**
+ * Interface for drive item details from Microsoft Graph API.
+ */
 interface DriveItem {
   id: string;
   name: string;
@@ -10,6 +13,9 @@ interface DriveItem {
   size: number;
 }
 
+/**
+ * Interface for file metadata when uploading files.
+ */
 interface FileMetadata {
   originalFileName?: string;
   reportName?: string;
@@ -19,7 +25,12 @@ interface FileMetadata {
 // Root folder path for simplicity
 const FOLDER_PATH = '';
 
-// Function to get a client with user's delegated token
+/**
+ * Creates a Microsoft Graph client authenticated with the user's token.
+ * 
+ * @param {string} accessToken - The user's access token.
+ * @returns {Client} The authenticated Microsoft Graph client.
+ */
 const getGraphClientWithToken = (accessToken: string): Client => {
   console.log('Creating Graph client with delegated user token');
   return Client.init({
@@ -29,7 +40,11 @@ const getGraphClientWithToken = (accessToken: string): Client => {
   });
 };
 
-// Get current date folder name in format DD-MM-YYYY
+/**
+ * Gets the current date formatted as DD-MM-YYYY for folder creation.
+ * 
+ * @returns {string} The formatted date string.
+ */
 const getCurrentDateFolder = (): string => {
   const now = new Date();
   const day = String(now.getDate()).padStart(2, '0');
@@ -38,7 +53,14 @@ const getCurrentDateFolder = (): string => {
   return `${day}-${month}-${year}`;
 };
 
-// Create a folder if it doesn't exist
+/**
+ * Creates a folder in the specified drive if it doesn't already exist.
+ * 
+ * @param {Client} graphClient - The Microsoft Graph client.
+ * @param {string} driveId - The ID of the drive where the folder will be created.
+ * @param {string} folderName - The name of the folder to create.
+ * @returns {Promise<void>} A promise that resolves when the folder is created or already exists.
+ */
 const createFolderIfNotExists = async (graphClient: Client, driveId: string, folderName: string): Promise<void> => {
   try {
     console.log(`Checking if folder exists: ${folderName}`);
@@ -67,7 +89,13 @@ const createFolderIfNotExists = async (graphClient: Client, driveId: string, fol
   }
 };
 
-// Function to get the user's drives
+/**
+ * Gets the drives available to the user.
+ * 
+ * @param {Client} graphClient - The Microsoft Graph client.
+ * @returns {Promise<string>} A promise that resolves with the ID of the first drive.
+ * @throws {Error} If no drives are found for the user.
+ */
 const getUserDrives = async (graphClient: Client) => {
   try {
     console.log('Getting user drives...');
@@ -86,6 +114,15 @@ const getUserDrives = async (graphClient: Client) => {
   }
 };
 
+/**
+ * Uploads a file to OneDrive using the provided access token.
+ * 
+ * @param {Buffer} fileBuffer - The file content as a buffer.
+ * @param {string} fileName - The name to save the file as.
+ * @param {string} accessToken - The user's access token.
+ * @returns {Promise<void>} A promise that resolves when the upload is complete.
+ * @throws {Error} If the upload fails.
+ */
 export const uploadToOneDrive = async (
   fileBuffer: Buffer,
   fileName: string,
@@ -155,7 +192,17 @@ export const uploadToOneDrive = async (
   }
 };
 
-// Try different approaches to find a valid upload location
+/**
+ * Tries different approaches to upload a file to OneDrive or SharePoint.
+ * Will attempt multiple methods to find a valid upload location.
+ * 
+ * @param {Buffer} fileBuffer - The file content as a buffer.
+ * @param {string} fileName - The name to save the file as.
+ * @param {string} accessToken - The user's access token.
+ * @param {FileMetadata} [metadata] - Optional metadata about the file.
+ * @returns {Promise<void>} A promise that resolves when the upload is complete.
+ * @throws {Error} If all upload attempts fail.
+ */
 export const uploadToOneDriveWithToken = async (
   fileBuffer: Buffer,
   fileName: string,
@@ -308,6 +355,14 @@ export const uploadToOneDriveWithToken = async (
   }
 };
 
+/**
+ * Uploads a file directly to the user's OneDrive.
+ * 
+ * @param {Client} graphClient - The Microsoft Graph client.
+ * @param {Buffer} fileBuffer - The file content as a buffer.
+ * @param {string} fileName - The name to save the file as.
+ * @returns {Promise<void>} A promise that resolves when the upload is complete.
+ */
 async function uploadToUserOneDrive(graphClient: Client, fileBuffer: Buffer, fileName: string): Promise<void> {
   const apiPath = `/me/drive/root:/${fileName}:/content`;
   console.log(`Upload path: ${apiPath}`);
@@ -315,6 +370,17 @@ async function uploadToUserOneDrive(graphClient: Client, fileBuffer: Buffer, fil
   await graphClient.api(apiPath).put(fileBuffer);
 }
 
+/**
+ * Uploads a file to a SharePoint site.
+ * Will try different formats of SharePoint site URLs.
+ * 
+ * @param {Client} graphClient - The Microsoft Graph client.
+ * @param {string} sitePath - The path to the SharePoint site.
+ * @param {Buffer} fileBuffer - The file content as a buffer.
+ * @param {string} fileName - The name to save the file as.
+ * @returns {Promise<void>} A promise that resolves when the upload is complete.
+ * @throws {Error} If all upload attempts fail.
+ */
 async function uploadToSharePointSite(graphClient: Client, sitePath: string, fileBuffer: Buffer, fileName: string): Promise<void> {
   // Try different formats of SharePoint site URL
   try {
@@ -375,6 +441,15 @@ async function uploadToSharePointSite(graphClient: Client, sitePath: string, fil
   }
 }
 
+/**
+ * Attempts to upload a file to the first available site.
+ * 
+ * @param {Client} graphClient - The Microsoft Graph client.
+ * @param {Buffer} fileBuffer - The file content as a buffer.
+ * @param {string} fileName - The name to save the file as.
+ * @returns {Promise<void>} A promise that resolves when the upload is complete.
+ * @throws {Error} If no sites are available or all upload attempts fail.
+ */
 async function uploadToFirstAvailableSite(graphClient: Client, fileBuffer: Buffer, fileName: string): Promise<void> {
   // Get all sites the user has access to
   const sitesResponse = await graphClient.api('/sites').get();
@@ -416,6 +491,16 @@ async function uploadToFirstAvailableSite(graphClient: Client, fileBuffer: Buffe
   }
 }
 
+/**
+ * Attempts to upload a file to the first available site with a specified folder.
+ * 
+ * @param {Client} graphClient - The Microsoft Graph client.
+ * @param {Buffer} fileBuffer - The file content as a buffer.
+ * @param {string} fileName - The name to save the file as.
+ * @param {string} folderName - The name of the folder to upload to.
+ * @returns {Promise<void>} A promise that resolves when the upload is complete.
+ * @throws {Error} If no sites are available or all upload attempts fail.
+ */
 async function uploadToFirstAvailableSiteWithFolder(graphClient: Client, fileBuffer: Buffer, fileName: string, folderName: string): Promise<void> {
   // Get all sites the user has access to
   const sitesResponse = await graphClient.api('/sites').get();
@@ -462,6 +547,13 @@ async function uploadToFirstAvailableSiteWithFolder(graphClient: Client, fileBuf
   }
 }
 
+/**
+ * Gets recent files from the user's OneDrive.
+ * 
+ * @param {string} accessToken - The user's access token.
+ * @returns {Promise<DriveItem[]>} A promise that resolves with an array of drive items.
+ * @throws {Error} If the operation fails.
+ */
 export const getRecentFiles = async (accessToken: string): Promise<DriveItem[]> => {
   try {
     console.log('Getting recent files from OneDrive for Business');

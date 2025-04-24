@@ -2,6 +2,17 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
+/**
+ * Uploads a file to OneDrive through the backend API.
+ * Tracks upload progress and includes metadata about the file.
+ * 
+ * @param {File} file - The file to upload.
+ * @param {string} formattedFileName - The formatted filename to save as.
+ * @param {string} accessToken - The user's access token.
+ * @param {function} onProgress - Callback function that receives progress updates.
+ * @returns {Promise<void>} A promise that resolves when the upload is complete.
+ * @throws {Error} If the upload fails.
+ */
 export const uploadFile = async (
   file: File,
   formattedFileName: string,

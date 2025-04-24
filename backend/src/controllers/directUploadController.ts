@@ -4,8 +4,15 @@ import { uploadToOneDriveWithToken } from '../services/oneDriveService';
 
 const router = Router();
 
-// Configure multer for file upload
+/**
+ * Configure multer storage for file upload.
+ * Using memory storage to handle file as buffer.
+ */
 const storage = multer.memoryStorage();
+
+/**
+ * Configure multer for file uploads with size limits.
+ */
 const upload = multer({
   storage,
   limits: {
@@ -13,7 +20,20 @@ const upload = multer({
   },
 });
 
-// Direct upload using bearer token
+/**
+ * POST handler for direct file uploads to OneDrive.
+ * This route requires a valid Bearer token in the Authorization header.
+ * 
+ * The route accepts multipart form data with:
+ * - file: The file to upload
+ * - fileName: Optional custom filename
+ * - originalFileName: Optional original filename for metadata
+ * - formattedReportName: Optional formatted report name for metadata
+ * 
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @returns {Response} JSON response with upload status
+ */
 router.post('/', upload.single('file'), async (req: Request, res: Response) => {
   console.log('Received direct upload request');
   try {
